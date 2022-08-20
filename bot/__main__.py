@@ -1,15 +1,15 @@
 import asyncio
-import os
 
 from aiogram import Bot, Dispatcher, types
-from utils.bot_logger import create_logger
+
+from bot.config.config_reader import config
+from bot.config.logger_config import create_logger
 
 
 async def main():
     logger.warning("Starting bot...")
 
-    bot_token = os.environ.get('TG_BOT__DEV_TOKEN')
-    bot = Bot(token=bot_token)
+    bot = Bot(token=config.tg_bot__dev_token.get_secret_value())
     dp = Dispatcher()
 
     await dp.start_polling(bot)

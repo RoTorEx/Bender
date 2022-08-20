@@ -23,4 +23,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["poetry", "run", "python", "app"]
+CMD ["poetry", "run", "python", "-m", "bot"]
