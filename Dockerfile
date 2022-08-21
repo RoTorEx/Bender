@@ -5,6 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE 1 \
 
 RUN apt-get update \
     && apt-get install curl -y \
+    && apt-get -y install libpq-dev gcc \
     && curl -sSL https://install.python-poetry.org | python - --version 1.1.13
 
 ENV PATH="/root/.local/bin:$PATH"
@@ -20,7 +21,5 @@ RUN pip install --no-cache-dir --upgrade pip \
 RUN poetry install --no-dev
 
 COPY . .
-
-EXPOSE 5000
 
 CMD ["poetry", "run", "python", "-m", "bot"]
