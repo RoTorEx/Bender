@@ -7,6 +7,10 @@ authors = ["Aleksey Strelkov <aleks.strel.8v@gmail.com>"]
 [tool.poetry.dependencies]
 python = "3.10.2"
 aiogram = "3.0.0b3"
+python-dotenv = "^0.20.0"
+SQLAlchemy = "^1.4.40"
+asyncpg = "^0.26.0"
+greenlet = "^1.1.2"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^5.0.4"

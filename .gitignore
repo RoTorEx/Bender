@@ -1,5 +1,8 @@
 .env
+
 /data
+/logs
+/Archive
 
 **/__pycache__
 **/.pytest_cache
