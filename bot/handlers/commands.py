@@ -1,17 +1,20 @@
-from aiogram import Router, filters, html, types
+from aiogram import F, Router, filters, html, types
 from aiogram.types import Message
 
 from bot.config.config_reader import load_config
 
+
 router = Router()
 
 
-@router.message(commands=["start"])
+@router.message((F.from_user.id.in_(load_config().tg_bot.admin_ids)), commands=["start"])
 async def cmd_start(message: Message):
-    if message.from_user.id in load_config().tg_bot.admin_ids:
-        await message.answer("Hello, Creator! ^^")
-    else:
-        await message.answer(f"Nice to see you, {message.from_user.first_name}.")
+    await message.answer(f"Nice to see you, {message.from_user.first_name}.")
+
+
+@router.message(F.from_user.id.in_(load_config().tg_bot.admin_ids), commands=["start"])
+async def cmd_start_admin(message: Message):
+    await message.answer("Hello, Creator! ^^")
 
 
 @router.message(commands=["name"])
