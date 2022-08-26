@@ -6,17 +6,17 @@ ENV PYTHONDONTWRITEBYTECODE 1 \
 RUN apt-get update \
     && apt-get install curl -y \
     && apt-get -y install libpq-dev gcc \
-    && curl -sSL https://install.python-poetry.org | python - --version 1.1.13
+    && curl -sSL https://install.python-poetry.org | python - --version 1.1.14
 
 ENV PATH="/root/.local/bin:$PATH"
 
-WORKDIR /opt/wiki_bot
+WORKDIR /opt/bender
 
 COPY pyproject.toml poetry.lock ./
 
 RUN pip install --no-cache-dir --upgrade pip \
- && pip install --no-cache-dir setuptools wheel \
- && pip install --no-cache-dir poetry
+    && pip install --no-cache-dir setuptools wheel \
+    && pip install --no-cache-dir poetry
 
 RUN poetry install --no-dev
 

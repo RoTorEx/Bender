@@ -1,8 +1,8 @@
 .env
 
+/Archive
 /data
 /logs
-/Archive
 
 **/__pycache__
 **/.pytest_cache

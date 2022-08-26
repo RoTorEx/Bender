@@ -34,9 +34,9 @@ services:
     env_file:
       - .env
     ports:
-      - 8000:5000
+      - 8000:8000
     volumes:
-      - .:/opt/wiki_bot
+      - .:/opt/bender
     links:
       - postgres
     depends_on :
