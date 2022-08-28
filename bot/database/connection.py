@@ -6,7 +6,7 @@ from bot.config.config_reader import Postgres
 
 def database_path(db: Postgres, async_fallback: bool = False) -> str:
     """Make path to Postgres database."""
-    path = f"postgresql+asyncpg://{db.name}:{db.password}@{db.host}:{db.port}/{db.name}"
+    path = f"postgresql+asyncpg://{db.user}:{db.password}@{db.host}:{db.port}/{db.name}"
 
     if async_fallback:
         path += "?async_fallback=True"
