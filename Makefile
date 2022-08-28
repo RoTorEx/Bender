@@ -4,7 +4,7 @@ entrypoint:
 clean:
 	@find . -name \*__pycache__ -type d -exec rm -rf '{}' \;
 
-start:
+run:
 	@poetry run python -m bot
 
 up:
@@ -14,3 +14,6 @@ down:
 	@docker-compose down -v
 
 reup: down up
+
+log:
+	@docker-compose logs -f
