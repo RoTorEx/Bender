@@ -5,7 +5,7 @@ description = ""
 authors = ["Aleksey Strelkov <aleks.strel.8v@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "3.10.2"
+python = "^3.10"
 aiogram = "3.0.0b3"
 python-dotenv = "^0.20.0"
 SQLAlchemy = "^1.4.40"
