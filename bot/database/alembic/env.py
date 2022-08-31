@@ -9,7 +9,7 @@ from sqlalchemy.orm import clear_mappers
 
 from bot.config.config_reader import load_config
 from bot.database.connection import database_path
-from bot.database.models.base import mapper_registry
+from bot.database.models import map_tables, mapper_registry
 
 
 # this is the Alembic Config object, which provides
@@ -28,8 +28,8 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = mapper_registry.metadata
-# clear_mappers()
-# map_tables()
+map_tables()
+clear_mappers()
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
