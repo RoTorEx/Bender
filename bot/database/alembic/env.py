@@ -7,7 +7,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.orm import clear_mappers
 
-from bot.config.config_reader import load_config
+from bot.config.config_reader import read_config
 from bot.database.connection import database_path
 from bot.database.models import map_tables, mapper_registry
 
@@ -16,7 +16,7 @@ from bot.database.models import map_tables, mapper_registry
 # access to the values within the .ini file in use.
 config = context.config
 
-config.set_main_option("sqlalchemy.url", database_path(load_config().postgres, async_fallback=True))
+config.set_main_option("sqlalchemy.url", database_path(read_config().postgres, async_fallback=True))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

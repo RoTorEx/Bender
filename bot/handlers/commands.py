@@ -1,18 +1,18 @@
 from aiogram import F, Router, filters, html, types
 from aiogram.types import Message
 
-from bot.config.config_reader import load_config
+from bot.config.config_reader import read_config
 
 
 router = Router()
 
 
-@router.message(~(F.from_user.id.in_(load_config().tg_bot.admin_ids)), commands=["start"])
+@router.message(~(F.from_user.id.in_(read_config().tg_bot.admin_ids)), commands=["start"])
 async def cmd_start(message: Message):
     await message.answer(f"Nice to see you, {message.from_user.first_name}.")
 
 
-@router.message(F.from_user.id.in_(load_config().tg_bot.admin_ids), commands=["start"])
+@router.message(F.from_user.id.in_(read_config().tg_bot.admin_ids), commands=["start"])
 async def cmd_start_admin(message: Message):
     await message.answer("Hello, <b>Creator</b>!\n^_^", parse_mode="HTML")
 

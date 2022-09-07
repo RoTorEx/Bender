@@ -35,7 +35,7 @@ class Settings(BaseSettings):
         env_nested_delimiter = "__"
 
 
-def load_config() -> Settings:
+def read_config() -> Settings:
     """Create config."""
     config = Settings()
     return config
