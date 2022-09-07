@@ -1,8 +1,9 @@
 .env
+.vscode
+*.log
 
 /Archive
 /data
-/logs
 
 **/versions/*_.py
 **/__pycache__

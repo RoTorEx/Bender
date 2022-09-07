@@ -3,7 +3,7 @@ import asyncio
 from aiogram import Bot, Dispatcher
 
 from bot.config.config_reader import load_config
-from bot.config.logger_config import create_logger
+from bot.config.logger_build import build_logger
 from bot.database.connection import sa_sessionmarker
 from bot.handlers import commands
 
@@ -24,7 +24,7 @@ async def main():
 if __name__ == "__main__":
     try:
         config = load_config()
-        logger = create_logger(__name__)
+        logger = build_logger(__name__)
 
         asyncio.run(main())
 
