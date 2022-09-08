@@ -14,9 +14,9 @@ def database_path(db: Postgres, async_fallback: bool = False) -> str:
     return path
 
 
-def sa_sessionmarker(db: Postgres) -> sessionmaker:
-    """Make sessionmaker."""
-    engine = create_async_engine(database_path(db), echo=True)
+def sa_sessionmaker(db: Postgres, echo: bool = False) -> sessionmaker:
+    """Make async sessionmaker."""
+    engine = create_async_engine(database_path(db), echo=echo)
 
     return sessionmaker(
         bind=engine,
