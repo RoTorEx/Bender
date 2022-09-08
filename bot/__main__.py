@@ -4,29 +4,37 @@ from aiogram import Bot, Dispatcher
 
 from bot.config.config_reader import read_config
 from bot.config.logger_builder import build_logger
-from bot.database.connection import sa_sessionmarker
-from bot.handlers import commands
+from bot.database.connection import sa_sessionmaker
+from bot.handlers import commands, messages
+from bot.middlewares.db_session import DbSessionMiddleware
 
 
 async def main():
     """Application entrypoint"""
-    logger.warning("Starting bot...")
+    logger = build_logger(__name__)
+    config = read_config()
 
-    bot = Bot(token=config.tg_bot.dev_token)
+    # Creating bot and its dispatcher
+    bot = Bot(token=config.tg_bot.dev_token, parse_mode="HTML")
     dp = Dispatcher()
+
+    # Creating DB connections pool
+    session_pool = sa_sessionmaker(config.postgres, echo=False)
+
+    # Register middlewares
+    dp.message.middleware(DbSessionMiddleware(session_pool))
+    dp.callback_query.middleware(DbSessionMiddleware(session_pool))
+
     dp.include_router(commands.router)
+    dp.include_router(messages.router)
 
-    session = sa_sessionmarker(config.postgres)
+    try:
+        logger.warning("Starting bot...")
+        await dp.start_polling(bot)
 
-    await dp.start_polling(bot)
+    finally:
+        await bot.session.close()
 
 
 if __name__ == "__main__":
-    try:
-        config = read_config()
-        logger = build_logger(__name__)
-
-        asyncio.run(main())
-
-    except (KeyboardInterrupt, SystemExit):
-        logger.warning("Bot stopped!")
+    asyncio.run(main())

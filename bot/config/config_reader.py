@@ -8,6 +8,7 @@ class TgBot(BaseSettings):
     prod_token: str
     dev_token: str
     admin_ids: list[int]
+    port: int
 
     @validator("admin_ids", pre=True, always=True)
     def admin_ids_list(cls, v) -> list[int]:
