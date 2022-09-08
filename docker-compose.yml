@@ -6,25 +6,25 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES__PASSWORD}
-      POSTGRES_USER: ${POSTGRES__USER}
-      POSTGRES_DB: ${POSTGRES__NAME}
+      - POSTGRES_PASSWORD=${POSTGRES__PASSWORD}
+      - POSTGRES_USER=${POSTGRES__USER}
+      - POSTGRES_DB=${POSTGRES__NAME}
     ports:
       - ${POSTGRES__PORT}:${POSTGRES__PORT}
     volumes:
       - ./data/:/docker-entrypoint-initdb.d/
       - ./data/postgres/:/var/lib/postgresql/data
-    healthcheck :
+    healthcheck:
       test: [ "CMD", "pg_isready", "-q", "-d", "${POSTGRES__NAME}", "-U", "${POSTGRES__USER}" ]
-      interval : 5s
-      timeout : 5s
-      retries : 5
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   adminer:
     image: adminer
     ports:
-    - 8080:8080
-    depends_on :
+    - ${ADMINER__PORT}:${ADMINER__PORT}
+    depends_on:
       postgres:
         condition: service_healthy
 
@@ -34,11 +34,11 @@ services:
     env_file:
       - .env
     ports:
-      - 8000:8000
+      - ${TG_BOT__PORT}:${TG_BOT__PORT}
     volumes:
       - .:/bender_bot
     links:
       - postgres
-    depends_on :
+    depends_on:
       postgres:
         condition: service_healthy

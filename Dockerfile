@@ -34,22 +34,9 @@ COPY poetry.lock pyproject.toml ./
 RUN poetry install --no-dev
 
 
-
-FROM python-base as development
-# This `development` image is used during development / testing
-WORKDIR $PYSETUP_PATH
-# Copy in our built poetry + venv
-COPY --from=builder-base $POETRY_HOME $POETRY_HOME
-COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
-# Quicker install as runtime deps are already installed
-RUN poetry install
-
-
-
 FROM python-base as production
-# This `production` image used for runtime
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
-# Copy bot app to workdir
+# Copy bot to workdir
 WORKDIR /bender_bot
 COPY ./bot /bender_bot/bot
 # Start app
