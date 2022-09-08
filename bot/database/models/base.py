@@ -1,5 +1,6 @@
 from sqlalchemy import MetaData
-from sqlalchemy.orm import registry
+from sqlalchemy.orm import declarative_base, registry
+from sqlalchemy.orm.decl_api import DeclarativeMeta
 
 
 convention = {
@@ -12,3 +13,5 @@ convention = {
 
 meta = MetaData(naming_convention=convention)
 mapper_registry = registry(meta)
+
+Base: DeclarativeMeta = declarative_base(metadata=mapper_registry.metadata)

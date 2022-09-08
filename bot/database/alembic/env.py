@@ -5,11 +5,10 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine
-from sqlalchemy.orm import clear_mappers
 
 from bot.config.config_reader import read_config
 from bot.database.connection import database_path
-from bot.database.models import map_tables, mapper_registry
+from bot.database.models import mapper_registry
 
 
 # this is the Alembic Config object, which provides
@@ -28,8 +27,6 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = mapper_registry.metadata
-map_tables()
-clear_mappers()
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
