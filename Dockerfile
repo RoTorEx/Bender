@@ -23,8 +23,8 @@ FROM python-base as builder-base
 # Install dependencies for installing poetry & building python deps
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
-        curl \
-        build-essential
+    curl \
+    build-essential
 # Install Poetry
 RUN curl -sSL https://install.python-poetry.org | python - --version 1.1.14
 # Copy project requirement files here to ensure they will be cached
@@ -34,10 +34,9 @@ COPY poetry.lock pyproject.toml ./
 RUN poetry install --no-dev
 
 
+
 FROM python-base as production
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 # Copy bot to workdir
 WORKDIR /bender_bot
 COPY ./bot /bender_bot/bot
-# Start app
-ENTRYPOINT ["python", "-m", "bot"]

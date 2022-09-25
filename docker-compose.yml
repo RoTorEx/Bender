@@ -1,8 +1,22 @@
 version: "3.8"
 services:
+  redis:
+    image: redis:6-alpine
+    env_file:
+      - .env
+    environment:
+      REDIS_HOST: ${REDIS__HOST}
+      VOLUMES_DIR: ~/{VOLUMES_DIR}
+    ports:
+      - 16379:6379
+    volumes:
+      - ~/${VOLUMES_DIR}/redis-config:/usr/local/etc/redis/redis.conf
+      - ~/${VOLUMES_DIR}/redis-data:/data
+    command: "redis-server /usr/local/etc/redis/redis.conf"
+    restart: "unless-stopped"
 
   postgres:
-    image: postgres:13.4-alpine
+    image: postgres:14-alpine
     env_file:
       - .env
     environment:
@@ -10,23 +24,47 @@ services:
       - POSTGRES_USER=${POSTGRES__USER}
       - POSTGRES_DB=${POSTGRES__NAME}
     ports:
-      - ${POSTGRES__PORT}:${POSTGRES__PORT}
+      - 15432:5432
     volumes:
-      - ./data/:/docker-entrypoint-initdb.d/
-      - ./data/postgres/:/var/lib/postgresql/data
+      - ~/${VOLUMES_DIR}/:/docker-entrypoint-initdb.d/
+      - ~/${VOLUMES_DIR}/postgres/:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD", "pg_isready", "-q", "-d", "${POSTGRES__NAME}", "-U", "${POSTGRES__USER}" ]
+      test:
+        ["CMD", "pg_isready", "-q", "-d", "${POSTGRES__NAME}", "-U", "${POSTGRES__USER}"]
       interval: 5s
       timeout: 5s
       retries: 5
+    depends_on:
+      - redis
+    restart: "unless-stopped"
+
+  postgres_backup:
+    image: prodrigestivill/postgres-backup-local:14-alpine
+    restart: always
+    volumes:
+      - ~/${VOLUMES_DIR}/backups:/backups
+    links:
+      - postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - POSTGRES_HOST=${POSTGRES__HOST}
+      - POSTGRES_DB=${POSTGRES__NAME}
+      - POSTGRES_USER=${POSTGRES__USER}
+      - POSTGRES_PASSWORD=${POSTGRES__PASSWORD}
+      - POSTGRES_EXTRA_OPTS=-Z6 --schema=public --blobs
+      - SCHEDULE=@daily
+      - HEALTHCHECK_PORT=8080
 
   adminer:
     image: adminer
     ports:
-    - ${ADMINER__PORT}:${ADMINER__PORT}
+      - 8080:8080
     depends_on:
       postgres:
         condition: service_healthy
+    restart: "unless-stopped"
 
   bot:
     build:
@@ -34,7 +72,7 @@ services:
     env_file:
       - .env
     ports:
-      - ${TG_BOT__PORT}:${TG_BOT__PORT}
+      - 8000:8000
     volumes:
       - .:/bender_bot
     links:
@@ -42,3 +80,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    stop_signal: SIGINT
+    restart: "unless-stopped"
+    command: sh -c "python -m alembic upgrade head && python -m bot"  # Apply migration and start bot
