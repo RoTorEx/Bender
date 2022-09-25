@@ -2,10 +2,11 @@ from typing import Any, Awaitable, Callable, Dict
 
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
+from sqlalchemy.orm import sessionmaker
 
 
 class DbSessionMiddleware(BaseMiddleware):
-    def __init__(self, session_pool):
+    def __init__(self, session_pool: sessionmaker):
         super().__init__()
         self.session_pool = session_pool
 

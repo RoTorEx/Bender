@@ -3,20 +3,17 @@ import json
 from pydantic import BaseSettings, validator
 
 
-class TgBot(BaseSettings):
-    """Telegram bot envs."""
-    prod_token: str
-    dev_token: str
-    admin_ids: list[int]
-    port: int
+class Redis(BaseSettings):
+    """Redis envs."""
 
-    @validator("admin_ids", pre=True, always=True)
-    def admin_ids_list(cls, v) -> list[int]:
-        return json.loads(v)
+    db: int
+    host: str
+    port: int
 
 
 class Postgres(BaseSettings):
     """Postgres envs."""
+
     name: str
     user: str
     password: str
@@ -24,13 +21,31 @@ class Postgres(BaseSettings):
     port: int
 
 
+class TgBot(BaseSettings):
+    """Telegram bot envs."""
+
+    prod_token: str
+    dev_token: str
+    admin_list: list[int]
+    port: int
+    use_redis: bool
+
+    @validator("admin_list", pre=True, always=True)
+    def admin_list_validator(cls, v) -> list[int]:
+        return json.loads(v)
+
+
 class Settings(BaseSettings):
-    """To atributes set name wich correspond to preffix name (NAME__) in .env file."""
+    """To attributes sets name which correspond to prefix name (NAME__) from .env file
+    and ignore prefix before add environmental variable to this config."""
+
     tg_bot: TgBot
+    redis: Redis
     postgres: Postgres
 
     class Config:
         """Environmentals handler."""
+
         env_file = ".env"
         env_file_encoding = "utf-8"
         env_nested_delimiter = "__"
