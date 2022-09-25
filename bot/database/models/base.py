@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from sqlalchemy import MetaData
 from sqlalchemy.orm import declarative_base, registry
 from sqlalchemy.orm.decl_api import DeclarativeMeta
@@ -15,3 +16,10 @@ meta = MetaData(naming_convention=convention)
 mapper_registry = registry(meta)
 
 Base: DeclarativeMeta = declarative_base(metadata=mapper_registry.metadata)
+
+
+class CustomBaseModel(BaseModel):
+    """Base Pydantic validation class."""
+
+    class Config:
+        orm_mode = True
