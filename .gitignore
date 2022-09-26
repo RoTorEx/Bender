@@ -3,6 +3,7 @@
 *.log
 
 /Archive
+/Temp
 /data
 
 **/__pycache__
