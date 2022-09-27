@@ -55,7 +55,18 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES__PASSWORD}
       - POSTGRES_EXTRA_OPTS=-Z6 --schema=public --blobs
       - SCHEDULE=@daily
-      - HEALTHCHECK_PORT=8080
+      - HEALTHCHECK_PORT=1010
+
+  # postgres_migration:
+  #   # # You can override this tag using docker-compose.override.yml
+  #   # image: "groosha/telegram-bombsweeper-bot:latest"
+  #   build:
+  #     context: .
+  #   # restart: "on-failure"
+  #   depends_on:
+  #       - postgres
+  #   env_file: .env
+  #   command: sh -c "python -m alembic upgrade head"
 
   adminer:
     image: adminer
@@ -82,4 +93,3 @@ services:
         condition: service_healthy
     stop_signal: SIGINT
     restart: "unless-stopped"
-    command: sh -c "python -m alembic upgrade head && python -m bot"  # Apply migration and start bot
