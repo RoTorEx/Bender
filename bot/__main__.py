@@ -47,6 +47,7 @@ async def main():
         await dp.start_polling(bot)
 
     finally:
+        await dp.fsm.storage.close()
         await bot.session.close()
 
 
@@ -54,8 +55,8 @@ if __name__ == "__main__":
     logger = build_logger(__name__)
 
     try:
-        logger.warning("Bot started!")
+        logger.warning("Starting bot...")
         asyncio.run(main())
 
     except (KeyboardInterrupt, SystemExit):
-        logger.warning("Bot stopped!")
+        logger.warning("All pools and session closed. Bot stopped successfully!")

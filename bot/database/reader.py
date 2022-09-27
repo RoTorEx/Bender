@@ -29,7 +29,6 @@ async def read_random_quote(session: AsyncSession) -> str:
 
     if quote_list:
         quote = random.choice(quote_list)
-        print(quote.is_active)
         return f"```\n{quote.quotation}\n```\n© {quote.author}"
 
     else:
