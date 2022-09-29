@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
-from .base import Base, CustomBaseModel, mapper_registry
+from bot.database.models.base import Base, CustomBaseModel, mapper_registry
 
 
 class Quote(Base):

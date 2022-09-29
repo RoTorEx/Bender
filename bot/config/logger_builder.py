@@ -1,8 +1,9 @@
 import logging
 import sys
+from logging import Logger
 
 
-def build_logger(init_file_name):
+def build_logger(init_file_name: str) -> Logger:
     """Build custom logger."""
     logger = logging.getLogger(init_file_name)
 

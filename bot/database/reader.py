@@ -12,7 +12,7 @@ from bot.database.models.quote import Quote
 logger = build_logger(__name__)
 
 
-async def get_all_customers(session_pool: sessionmaker) -> list:
+async def get_all_customers(session_pool: sessionmaker) -> list[int]:
     """Get list of all registered customers."""
     async with session_pool() as session:
         statement = select(Customer.customer_id).where(Customer.is_active == bool(1))

@@ -1,7 +1,8 @@
 import re
+from typing import Any, Dict
 
 
-def make_customer_string(data: dict) -> str:
+def make_customer_string(data: Dict[str, Any]) -> str:
     """Make user string to write it into database as quote author."""
     first_name = data.get("first_name", None)
     last_name = data.get("last_name", None)

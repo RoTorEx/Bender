@@ -1,7 +1,9 @@
 import asyncio
+from typing import Union
 
 from aiogram import Bot, Dispatcher
 from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
+from aiogram.dispatcher.fsm.storage.redis import RedisStorage
 
 from bot.config.config_reader import read_config
 from bot.config.constants import TgBot
@@ -12,11 +14,12 @@ from bot.handlers import commands, messages_quote_dialog
 from bot.middlewares.db_session import DbSessionMiddleware
 
 
-async def main():
+async def main() -> None:
     """Application entrypoint"""
     config = read_config()
 
     # Choosing Memory Storage
+    storage: Union[RedisStorage, MemoryStorage]
     if config.tg_bot.use_redis:
         storage = redis_conection(config.redis)
 
@@ -24,7 +27,7 @@ async def main():
         storage = MemoryStorage()
 
     # Creating bot and its dispatcher
-    bot = Bot(token=config.tg_bot.dev_token, parse_mode="HTML")
+    bot = Bot(token=config.tg_bot.token, parse_mode="HTML")
     dp = Dispatcher(storage=storage)
 
     # Creating DB connections pool

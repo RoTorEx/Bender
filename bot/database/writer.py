@@ -1,5 +1,6 @@
 import datetime
 from contextlib import suppress
+from typing import Any, Dict
 
 from aiogram.types.user import User
 from sqlalchemy import select
@@ -37,7 +38,7 @@ async def write_new_customer(message_user: User, session: AsyncSession) -> None:
         )
 
 
-async def write_new_quote(data: dict, session: AsyncSession) -> None:
+async def write_new_quote(data: Dict[str, Any], session: AsyncSession) -> None:
     """Write quote to database."""
     statement = select(Customer).where(Customer.customer_id == data["quote_author"]["id"])
     result = await session.execute(statement)

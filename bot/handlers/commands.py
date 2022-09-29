@@ -13,23 +13,27 @@ logger = build_logger(__name__)
 router = Router()
 
 
-# /start -> add new customer and start bot
 @router.message(commands=["start"])
 async def cmd_start(message: Message, session: AsyncSession) -> None:
-    await write_new_customer(message.from_user, session)
-    await message.answer(f"Nice to see you, {message.from_user.first_name}.\nEnter '/menu' to continue.")
+    """/start -> add new customer and start bot"""
+    if message.from_user:  # Checking for None
+        await write_new_customer(message.from_user, session)
+        await message.answer(f"Nice to see you, {message.from_user.first_name}.\nEnter '/menu' to continue.")
+
+    else:
+        await message.answer("Hello %username%.\nEnter '/menu' to continue.")
 
 
-# /menu -> add menu buttons & clean state
 @router.message(commands=["menu"])
 async def cmd_menu(message: Message, state: FSMContext) -> None:
+    """/menu -> add menu buttons & clean state"""
     await state.clear()
     await message.answer("Now you see menu buttons.\nEnter '/cancel' to remove menu.", reply_markup=quote_menu())
 
 
-# /cancel -> downgrade finite-state machine & hide menu
 @router.message(commands=["cancel"])
 async def cmd_cancel(message: Message, state: FSMContext) -> None:
+    """/cancel -> downgrade finite-state machine & hide menu"""
     data = await state.get_data()
     if "dropping" in data:
         data["dropping"].extend([message.message_id])

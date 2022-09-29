@@ -1,6 +1,6 @@
 from sqlalchemy import BigInteger, Boolean, Column, Integer, String
 
-from .base import Base, CustomBaseModel, mapper_registry
+from bot.database.models.base import Base, CustomBaseModel, mapper_registry
 
 
 class Customer(Base):

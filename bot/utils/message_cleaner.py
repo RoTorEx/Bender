@@ -5,7 +5,7 @@ from bot.config.logger_builder import build_logger
 logger = build_logger(__name__)
 
 
-async def drop_messages(chat_id: int, message_list: list) -> None:
+async def drop_messages(chat_id: int, message_list: list[int]) -> None:
     for message_id in range(message_list[0], message_list[-1] + 1):
 
         try:

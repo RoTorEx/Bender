@@ -1,4 +1,5 @@
 import json
+from typing import Any, Union
 
 from pydantic import BaseSettings, validator
 
@@ -24,14 +25,13 @@ class Postgres(BaseSettings):
 class TgBot(BaseSettings):
     """Telegram bot envs."""
 
-    prod_token: str
-    dev_token: str
+    token: str
     admin_list: list[int]
     port: int
     use_redis: bool
 
     @validator("admin_list", pre=True, always=True)
-    def admin_list_validator(cls, v) -> list[int]:
+    def admin_list_validator(cls, v: str) -> Union[list[int], Any]:
         return json.loads(v)
 
 

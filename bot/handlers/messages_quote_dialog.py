@@ -36,14 +36,15 @@ async def msg_add_quote(message: Message, state: FSMContext) -> None:
 async def msg_new_quoute(message: Message, state: FSMContext) -> None:
     """Enter quote to bot."""
     data = await state.get_data()
-    data["quote"] = message.text
-    data["quote_sender_id"] = message.from_user.id
-    data["quote_author"] = {
-        "id": message.from_user.id,
-        "first_name": message.from_user.first_name,
-        "last_name": message.from_user.last_name,
-        "username": message.from_user.username,
-    }
+    if message.from_user:   # Checking for None
+        data["quote"] = message.text
+        data["quote_sender_id"] = message.from_user.id
+        data["quote_author"] = {
+            "id": message.from_user.id,
+            "first_name": message.from_user.first_name,
+            "last_name": message.from_user.last_name,
+            "username": message.from_user.username,
+        }
 
     await state.set_data(data)
     await state.set_state(AddQuote.enter_author)
@@ -131,16 +132,17 @@ async def msg_add_forward_quote(message: Message, state: FSMContext, session: As
             await write_new_customer(message.forward_from, session)
 
         data = await state.get_data()
-        data["dropping"].extend([message.message_id])
-        data["quote"] = message.text
-        data["quote_sender_id"] = message.from_user.id
-        data["quote_author"] = {
-            "id": message.forward_from.id,
-            "first_name": message.forward_from.first_name,
-            "last_name": message.forward_from.last_name,
-            "username": message.forward_from.username,
-        }
-        data["author"] = make_customer_string(data["quote_author"])
+        if message.from_user and message.forward_from:
+            data["dropping"].extend([message.message_id])
+            data["quote"] = message.text
+            data["quote_sender_id"] = message.from_user.id
+            data["quote_author"] = {
+                "id": message.forward_from.id,
+                "first_name": message.forward_from.first_name,
+                "last_name": message.forward_from.last_name,
+                "username": message.forward_from.username,
+            }
+            data["author"] = make_customer_string(data["quote_author"])
 
         await write_new_quote(data, session)  # Write quote to database
         await state.clear()
