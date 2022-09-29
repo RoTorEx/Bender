@@ -13,6 +13,15 @@ clean:
 	@find . -name \*__pycache__ -type d -exec rm -rf '{}' \;
 
 
+# Linters
+.PHONY: lint
+lint:
+	@$(py) isort $(code_dir)
+	@$(py) black $(code_dir)
+	@$(py) flake8 $(code_dir)
+	@$(py) mypy $(code_dir)
+
+
 # Alembic & migrations
 .PHONY: migrate
 migrate:
