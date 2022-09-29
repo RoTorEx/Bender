@@ -1,11 +1,30 @@
+# Commonly ignored file patterns.
+# More about .gitignore:
+#       https://www.atlassian.com/git/tutorials/saving-changes/gitignore
+
+# To project
+## Env
 .env
-.vscode
+
+## Logs
 *.log
 
-/Archive
-/Temp
+## Local databases & volumes
 /data
 
-**/__pycache__
-**/.pytest_cache
-**/.DS_Store
+## Temp folder
+/Temp
+
+# Common
+## Python & libs
+**/__pycache__/
+**/.pytest_cache/
+**/.mypy_cache/
+
+## OS
+**/.DS_Store/
+**/Thumbs.db/
+
+## IDEs
+**/.vscode/
+**/.idea/
