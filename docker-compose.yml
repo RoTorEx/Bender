@@ -57,17 +57,6 @@ services:
       - SCHEDULE=@daily
       - HEALTHCHECK_PORT=1010
 
-  # postgres_migration:
-  #   # # You can override this tag using docker-compose.override.yml
-  #   # image: "groosha/telegram-bombsweeper-bot:latest"
-  #   build:
-  #     context: .
-  #   # restart: "on-failure"
-  #   depends_on:
-  #       - postgres
-  #   env_file: .env
-  #   command: sh -c "python -m alembic upgrade head"
-
   adminer:
     image: adminer
     ports:
