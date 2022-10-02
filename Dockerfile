@@ -42,7 +42,7 @@ WORKDIR /bender_bot
 # Copy bot folder and conf data
 COPY ./bot /bender_bot/bot
 COPY ./alembic.ini /bender_bot/alembic.ini
-COPY ./entrypoint.sh .
+COPY ./scripts /bender_bot/scripts
 # Change mod and run ./entrypoint.sh
-RUN chmod +x ./entrypoint.sh
-ENTRYPOINT ["sh", "./entrypoint.sh"]
+RUN chmod +x ./scripts/entrypoint.sh
+ENTRYPOINT ["sh", "./scripts/entrypoint.sh"]

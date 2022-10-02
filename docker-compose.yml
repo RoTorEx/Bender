@@ -8,7 +8,7 @@ services:
       REDIS_HOST: ${REDIS__HOST}
       VOLUMES_DIR: ~/{VOLUMES_DIR}
     ports:
-      - 16379:6379
+      - 6379:6379
     volumes:
       - ~/${VOLUMES_DIR}/redis-config:/usr/local/etc/redis/redis.conf
       - ~/${VOLUMES_DIR}/redis-data:/data
@@ -24,7 +24,7 @@ services:
       - POSTGRES_USER=${POSTGRES__USER}
       - POSTGRES_DB=${POSTGRES__NAME}
     ports:
-      - 15432:5432
+      - 5432:5432
     volumes:
       - ~/${VOLUMES_DIR}/:/docker-entrypoint-initdb.d/
       - ~/${VOLUMES_DIR}/postgres/:/var/lib/postgresql/data

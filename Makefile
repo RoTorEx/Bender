@@ -25,36 +25,36 @@ lint:
 # Alembic & migrations
 .PHONY: migrate
 migrate:
-	@docker-compose exec bot alembic revision --autogenerate
+	@docker compose exec bot alembic revision --autogenerate
 
 .PHONY: apply
 apply:
-	@docker-compose exec bot alembic upgrade head
+	@docker compose exec bot alembic upgrade head
 
 .PHONY: downgrade
 downgrade:
-	@docker-compose exec bot alembic downgrade -1
+	@docker compose exec bot alembic downgrade -1
 
 .PHONY: history
 history:
-	@docker-compose exec bot alembic history
+	@docker compose exec bot alembic history
 
 
 # Docker compose
 .PHONY: up
 up:
-	@docker-compose up -d --build
+	@docker compose up -d --build
 
 .PHONY: reup
 reup:
-	@docker-compose down -v
-	@docker-compose up -d --build
+	@docker compose down -v
+	@docker compose up -d --build
 
 .PHONY: down
 down:
-	@docker-compose down -v
+	@docker compose down -v
 
 .PHONY: log
 log:
-	@docker-compose logs -f
+	@docker compose logs -f
 
