@@ -4,7 +4,7 @@
 
 # To project
 ## Env
-.env
+.env*
 
 ## Logs
 *.log
