@@ -41,8 +41,5 @@ COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 WORKDIR /bender_bot
 # Copy bot folder and conf data
 COPY ./bot /bender_bot/bot
-COPY ./alembic.ini /bender_bot/alembic.ini
-COPY ./scripts /bender_bot/scripts
-# Change mod and run ./entrypoint.sh
-RUN chmod +x ./scripts/entrypoint.sh
+# Run bot
 ENTRYPOINT ["python", "-m", "bot"]

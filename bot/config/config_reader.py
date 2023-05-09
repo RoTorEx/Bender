@@ -22,6 +22,14 @@ class Postgres(BaseSettings):
     port: int
 
 
+class Google(BaseSettings):
+    """Postgres envs."""
+
+    api: str
+    email: str
+    sheet_id: str
+
+
 class TgBot(BaseSettings):
     """Telegram bot envs."""
 
@@ -42,6 +50,7 @@ class Settings(BaseSettings):
     tg_bot: TgBot
     redis: Redis
     postgres: Postgres
+    google: Google
 
     class Config:
         """Environmentals handler."""

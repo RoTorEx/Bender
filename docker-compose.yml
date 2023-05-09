@@ -15,57 +15,6 @@ services:
     command: "redis-server /usr/local/etc/redis/redis.conf"
     restart: "unless-stopped"
 
-  postgres:
-    image: postgres:14-alpine
-    env_file:
-      - .env
-    environment:
-      - POSTGRES_PASSWORD=${POSTGRES__PASSWORD}
-      - POSTGRES_USER=${POSTGRES__USER}
-      - POSTGRES_DB=${POSTGRES__NAME}
-    ports:
-      - 5432:5432
-    volumes:
-      - ~/${VOLUMES_DIR}/:/docker-entrypoint-initdb.d/
-      - ~/${VOLUMES_DIR}/postgres/:/var/lib/postgresql/data
-    healthcheck:
-      test:
-        ["CMD", "pg_isready", "-q", "-d", "${POSTGRES__NAME}", "-U", "${POSTGRES__USER}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    depends_on:
-      - redis
-    restart: "unless-stopped"
-
-  postgres_backup:
-    image: prodrigestivill/postgres-backup-local:14-alpine
-    restart: always
-    volumes:
-      - ~/${VOLUMES_DIR}/backups:/backups
-    links:
-      - postgres
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      - POSTGRES_HOST=${POSTGRES__HOST}
-      - POSTGRES_DB=${POSTGRES__NAME}
-      - POSTGRES_USER=${POSTGRES__USER}
-      - POSTGRES_PASSWORD=${POSTGRES__PASSWORD}
-      - POSTGRES_EXTRA_OPTS=-Z6 --schema=public --blobs
-      - SCHEDULE=@daily
-      - HEALTHCHECK_PORT=1010
-
-  adminer:
-    image: adminer
-    ports:
-      - 8080:8080
-    depends_on:
-      postgres:
-        condition: service_healthy
-    restart: "unless-stopped"
-
   bot:
     build:
       context: .
@@ -75,10 +24,5 @@ services:
       - 8000:8000
     volumes:
       - .:/bender_bot
-    links:
-      - postgres
-    depends_on:
-      postgres:
-        condition: service_healthy
     stop_signal: SIGINT
     restart: "unless-stopped"
