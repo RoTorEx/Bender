@@ -1,7 +1,6 @@
 from aiogram import Router
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.config import build_logger
 from bot.keyboards import buttons_menu
@@ -13,7 +12,7 @@ commands_router = Router()
 
 
 @commands_router.message(commands=["start"])
-async def cmd_start(message: Message, session: AsyncSession) -> None:
+async def cmd_start(message: Message) -> None:
     """/start -> add new customer and start bot."""
     if message.from_user:  # Checking for None
         await message.answer(f"Nice to see you, {message.from_user.first_name}.\nEnter '/menu' to continue.")
