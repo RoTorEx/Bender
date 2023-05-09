@@ -4,8 +4,8 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-from bot.config.config_reader import read_config
-from bot.config.logger_builder import build_logger
+from bot.config import read_config
+from bot.config import build_logger
 
 
 config = read_config()
@@ -22,7 +22,8 @@ class AwardsService:
         self.table_name = "Award"
         self.left_column = "A"
         self.right_column = "P"
-        self.sheet_range = f"{self.table_name}!{self.left_column}:{self.right_column}"
+        self.line = ""
+        self.sheet_range = f"{self.table_name}!{self.left_column}{self.line}:{self.right_column}{self.line}"
 
     async def get_data_from_sheet(self) -> None:
         service = await self._build_service()
@@ -70,7 +71,6 @@ class AwardsService:
 
         except HttpError as error:
             logger.error(f"An error occurred: {error}")
-
 
     async def _build_service(self):
         creds = None

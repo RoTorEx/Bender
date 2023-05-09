@@ -4,32 +4,6 @@ from typing import Any, Union
 from pydantic import BaseSettings, validator
 
 
-class Redis(BaseSettings):
-    """Redis envs."""
-
-    db: int
-    host: str
-    port: int
-
-
-class Postgres(BaseSettings):
-    """Postgres envs."""
-
-    name: str
-    user: str
-    password: str
-    host: str
-    port: int
-
-
-class Google(BaseSettings):
-    """Postgres envs."""
-
-    api: str
-    email: str
-    sheet_id: str
-
-
 class TgBot(BaseSettings):
     """Telegram bot envs."""
 
@@ -43,13 +17,28 @@ class TgBot(BaseSettings):
         return json.loads(v)
 
 
+class Redis(BaseSettings):
+    """Redis envs."""
+
+    db: int
+    host: str
+    port: int
+
+
+class Google(BaseSettings):
+    """Google envs."""
+
+    api: str
+    email: str
+    sheet_id: str
+
+
 class Settings(BaseSettings):
     """To attributes sets name which correspond to prefix name (NAME__) from .env file
     and ignore prefix before add environmental variable to this config."""
 
     tg_bot: TgBot
     redis: Redis
-    postgres: Postgres
     google: Google
 
     class Config:

@@ -5,11 +5,9 @@ from aiogram import Bot, Dispatcher
 from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
 from aiogram.dispatcher.fsm.storage.redis import RedisStorage
 
-from bot.config.config_reader import read_config
-from bot.config.constants import TgBot
-from bot.config.logger_builder import build_logger
-from bot.database.connection import redis_conection
-from bot.handlers import commands, messages_awards_dialog
+from bot.config import build_logger, read_config
+from bot.database import redis_conection
+from bot.handlers import awards_router, commands_router
 
 
 async def main() -> None:
@@ -29,13 +27,8 @@ async def main() -> None:
     dp = Dispatcher(storage=storage)
 
     # Register routers
-    dp.include_router(commands.router)
-    dp.include_router(messages_awards_dialog.router)
-
-    # Create contants dataclass
-    TgBot.bot = bot
-    TgBot.admin_list = config.tg_bot.admin_list
-    # TgBot.customer_list = await get_all_customers(session_pool)
+    dp.include_router(awards_router)
+    dp.include_router(commands_router)
 
     try:
         await dp.start_polling(bot)
@@ -49,7 +42,7 @@ if __name__ == "__main__":
     logger = build_logger(__name__)
 
     try:
-        logger.warning("Starting bot...")
+        logger.info("Starting bot...")
         asyncio.run(main())
 
     except (KeyboardInterrupt, SystemExit):
