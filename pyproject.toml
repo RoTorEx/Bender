@@ -8,22 +8,16 @@ authors = ["Aleksey Strelkov <aleks.strel.8v@gmail.com>"]
 python = "^3.10"
 aiogram = "3.0.0b3"
 python-dotenv = "^0.20.0"
-SQLAlchemy = "^1.4.40"
-asyncpg = "0.27.0"
-greenlet = "^1.1.2"
-alembic = "^1.8.1"
 redis = "^4.3.4"
-flake8 = "^5.0.4"
-isort = "^5.10.1"
-black = "^22.8.0"
-mypy = "^0.981"
-Flake8-pyproject = "^1.1.0"
 google-spreadsheet = "^0.0.6"
 google-auth-oauthlib = "^1.0.0"
 pandas = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
-flake8 = "^5.0.4"
+flake8 = "^6.0.0"
+Flake8-pyproject = "^1.1.0"
+isort = "^5.10.1"
+mypy = "^0.981"
 black = {version = "^22.8.0", allow-prereleases = true}
 
 [build-system]
