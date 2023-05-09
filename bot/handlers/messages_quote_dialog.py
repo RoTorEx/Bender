@@ -7,8 +7,8 @@ from bot.config.constants import TgBot
 from bot.database.reader import read_random_quote
 from bot.database.writer import write_new_customer, write_new_quote
 from bot.keyboards.quote import msg_new_author_kb, msg_new_quoute_kb, quote_menu
-from bot.state.menu_state import MenuState
-from bot.state.quote_state import QuoteState
+from bot.states.menu_state import MenuState
+from bot.states.quote_state import QuoteState
 from bot.utils.message_cleaner import drop_message, drop_messages
 from bot.utils.user_to_string import make_customer_string
 

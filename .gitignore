@@ -5,7 +5,7 @@
 # To project
 ## Env & keys
 .env*
-keys
+keys/*.json
 
 ## Logs
 *.log

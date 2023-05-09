@@ -45,4 +45,4 @@ COPY ./alembic.ini /bender_bot/alembic.ini
 COPY ./scripts /bender_bot/scripts
 # Change mod and run ./entrypoint.sh
 RUN chmod +x ./scripts/entrypoint.sh
-ENTRYPOINT ["sh", "./scripts/entrypoint.sh"]
+ENTRYPOINT ["python", "-m", "bot"]
