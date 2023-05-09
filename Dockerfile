@@ -1,4 +1,4 @@
-FROM python:3.10-slim as python-base
+FROM python:3.11-slim as python-base
 # Python / Pip / Poetry / Paths
 ENV \
     PYTHONUNBUFFERED=1 \
@@ -23,21 +23,21 @@ FROM python-base as builder-base
 # Install dependencies for installing poetry & building python deps
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
-    curl \
-    build-essential
+    curl
 # Install Poetry
-RUN curl -sSL https://install.python-poetry.org | python - --version 1.1.14
+RUN curl -sSL https://install.python-poetry.org | python - --version 1.4.0
 # Copy project requirement files here to ensure they will be cached
 WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
 # Install runtime deps - uses $POETRY_VIRTUALENVS_IN_PROJECT internally
-RUN poetry install --no-dev
+RUN poetry install --with app --with test --without dev --sync
 
 
 
-FROM python-base as production
+FROM python-base
+# Intall sys dependencies and copy path to Python dependencies
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
-# Copy bot to workdir
+# Set work directory and env path
 WORKDIR /bender_bot
 # Copy bot folder and conf data
 COPY ./bot /bender_bot/bot

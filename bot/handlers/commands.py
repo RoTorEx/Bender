@@ -5,7 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot.config.logger_builder import build_logger
 from bot.database.writer import write_new_customer
-from bot.keyboards.quote import quote_menu
+from bot.keyboards.menu import buttons_menu
+from bot.state.menu_state import MenuState
 from bot.utils.message_cleaner import drop_messages
 
 
@@ -28,15 +29,19 @@ async def cmd_start(message: Message, session: AsyncSession) -> None:
 async def cmd_menu(message: Message, state: FSMContext) -> None:
     """/menu -> add menu buttons & clean state"""
     await state.clear()
-    await message.answer("Now you see menu buttons.\nEnter '/cancel' to remove menu.", reply_markup=quote_menu())
+    await state.set_state(MenuState.start_menu)
+    await message.answer("Now you see menu buttons.\nEnter '/cancel' to remove menu.", reply_markup=buttons_menu())
 
 
 @router.message(commands=["cancel"])
 async def cmd_cancel(message: Message, state: FSMContext) -> None:
     """/cancel -> downgrade finite-state machine & hide menu"""
     data = await state.get_data()
+
     if "dropping" in data:
         data["dropping"].extend([message.message_id])
         await drop_messages(message.chat.id, data["dropping"])  # Drop extra FSM messages from chat
+
     await state.clear()
+    await state.set_state(MenuState.end_menu)
     await message.answer("Cleaning...\nEnter '/menu' add menu.", reply_markup=ReplyKeyboardRemove())

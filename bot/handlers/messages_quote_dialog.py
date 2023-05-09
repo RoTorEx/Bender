@@ -7,7 +7,8 @@ from bot.config.constants import TgBot
 from bot.database.reader import read_random_quote
 from bot.database.writer import write_new_customer, write_new_quote
 from bot.keyboards.quote import msg_new_author_kb, msg_new_quoute_kb, quote_menu
-from bot.state.quote_dialog import AddQuote
+from bot.state.menu_state import MenuState
+from bot.state.quote_state import QuoteState
 from bot.utils.message_cleaner import drop_message, drop_messages
 from bot.utils.user_to_string import make_customer_string
 
@@ -15,24 +16,34 @@ from bot.utils.user_to_string import make_customer_string
 router = Router()
 
 
-@router.message(F.text == "Random quote", content_types="text")
+@router.message(MenuState.start_menu, F.text == "Quotes", content_types="text")
+async def msg_start_quote(message: Message, state: FSMContext) -> None:
+    """Starts Quote dialog."""
+    await state.set_state(QuoteState.start_quote)
+    await message.answer(
+        "Quote",
+        reply_markup=quote_menu(),
+    )
+
+
+@router.message(QuoteState.start_quote, F.text == "Random quote", content_types="text")
 async def msg_get_random_quote(message: Message, session: AsyncSession) -> None:
     """Press 'Get quote' bot return random quote from database."""
     answer = await read_random_quote(session)
     await message.answer(answer)
 
 
-@router.message(F.text == "Add quote", content_types="text")
+@router.message(QuoteState.start_quote, F.text == "Add quote", content_types="text")
 async def msg_add_quote(message: Message, state: FSMContext) -> None:
     """Press 'Add quote' bot start FSM to get quote from customer and write it to collection."""
     data = {"dropping": [message.message_id]}
 
     await state.set_data(data)
-    await state.set_state(AddQuote.enter_quote)
+    await state.set_state(QuoteState.enter_quote)
     await message.answer("Enter your qoute please.", reply_markup=ReplyKeyboardRemove())
 
 
-@router.message(AddQuote.enter_quote)
+@router.message(QuoteState.enter_quote)
 async def msg_new_quoute(message: Message, state: FSMContext) -> None:
     """Enter quote to bot."""
     data = await state.get_data()
@@ -47,14 +58,14 @@ async def msg_new_quoute(message: Message, state: FSMContext) -> None:
         }
 
     await state.set_data(data)
-    await state.set_state(AddQuote.enter_author)
+    await state.set_state(QuoteState.enter_author)
     await message.answer(
         "Now you enter the author's name of previous quote or use buttons below.",
         reply_markup=msg_new_quoute_kb(),
     )
 
 
-@router.message(AddQuote.enter_author)
+@router.message(QuoteState.enter_author)
 async def msg_new_author(message: Message, state: FSMContext) -> None:
     """Enter quote's author to bot."""
     data = await state.get_data()
@@ -69,14 +80,14 @@ async def msg_new_author(message: Message, state: FSMContext) -> None:
         data["author"] = message.text
 
     await state.set_data(data)
-    await state.set_state(AddQuote.enter_confirm)
+    await state.set_state(QuoteState.enter_confirm)
     await message.answer(
         f"Allright here?\n\n```\n{data['quote']}\n```\n© {data['author']}",
         reply_markup=msg_new_author_kb(),
     )
 
 
-@router.message(AddQuote.enter_confirm)
+@router.message(QuoteState.enter_confirm)
 async def msg_new_confirmation(message: Message, state: FSMContext, session: AsyncSession) -> None:
     """Verification and confirmation of a previously created quote."""
     data = await state.get_data()
@@ -90,11 +101,11 @@ async def msg_new_confirmation(message: Message, state: FSMContext, session: Asy
         await drop_messages(message.chat.id, data["dropping"])  # Drop extra FSM messages from chat
 
     elif message.text == "Change quote.":
-        await state.set_state(AddQuote.enter_quote)
+        await state.set_state(QuoteState.enter_quote)
         await message.answer("Please change your quote.", reply_markup=ReplyKeyboardRemove())
 
     elif message.text == "Change author.":
-        await state.set_state(AddQuote.enter_author)
+        await state.set_state(QuoteState.enter_author)
         await message.answer("Please change quote's author.", reply_markup=msg_new_quoute_kb())
 
     elif message.text == "No, I changed my mind. Cancel everything.":
@@ -108,20 +119,20 @@ async def msg_new_confirmation(message: Message, state: FSMContext, session: Asy
         await drop_message(message.chat.id, message.message_id)  # Drop non handled messages in state
 
 
-@router.message(F.text == "Forward quote", content_types="text")
+@router.message(QuoteState.start_quote, F.text == "Forward quote", content_types="text")
 async def msg_forward_quote(message: Message, state: FSMContext) -> None:
     """Press 'Add quote' bot start FSM to get quote from customer and write it to collection."""
     data = {"dropping": [message.message_id]}
 
     await state.set_data(data)
-    await state.set_state(AddQuote.forward_quote)
+    await state.set_state(QuoteState.forward_quote)
     await message.answer(
         "Now forward somebody message to me.\n<b>I can process messages from users who have open accounts!</b>",
         reply_markup=ReplyKeyboardRemove(),
     )
 
 
-@router.message(AddQuote.forward_quote)
+@router.message(QuoteState.forward_quote)
 async def msg_add_forward_quote(message: Message, state: FSMContext, session: AsyncSession) -> None:
     """Write forward message to quote collection."""
     if message.forward_from is None:
