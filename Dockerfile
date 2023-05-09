@@ -30,7 +30,7 @@ RUN curl -sSL https://install.python-poetry.org | python - --version 1.4.0
 WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
 # Install runtime deps - uses $POETRY_VIRTUALENVS_IN_PROJECT internally
-RUN poetry install --with app --with test --without dev --sync
+RUN poetry install --without dev --sync
 
 
 
@@ -40,6 +40,6 @@ COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 # Set work directory and env path
 WORKDIR /bender_bot
 # Copy bot folder and conf data
-COPY ./bot /bender_bot/bot
+COPY ./ /bender_bot
 # Run bot
 ENTRYPOINT ["python", "-m", "bot"]
