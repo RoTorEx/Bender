@@ -40,3 +40,10 @@ down:
 log:
 	@docker compose logs -f
 
+.PHONY: push
+push:
+	@docker buildx build \
+	-t amsisid3/bender:latest  \
+	-f ./Dockerfile . \
+	--platform=linux/amd64 \
+	--push
