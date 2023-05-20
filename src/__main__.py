@@ -5,9 +5,9 @@ from aiogram import Bot, Dispatcher
 from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
 from aiogram.dispatcher.fsm.storage.redis import RedisStorage
 
-from bot.config import build_logger, read_config
-from bot.database import redis_conection
-from bot.handlers import awards_router, commands_router
+from src.config import build_logger, read_config
+from src.database import redis_conection
+from src.components.handlers import awards_router, commands_router
 
 
 async def main() -> None:
@@ -46,4 +46,4 @@ if __name__ == "__main__":
         asyncio.run(main())
 
     except (KeyboardInterrupt, SystemExit):
-        logger.warning("All pools and session closed. Bot stopped successfully!")
+        logger.info("All pools and session closed. Bot stopped successfully!")

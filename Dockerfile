@@ -42,4 +42,4 @@ WORKDIR /bender_bot
 # Copy bot folder and conf data
 COPY ./ /bender_bot
 # Run bot
-ENTRYPOINT ["python", "-m", "bot"]
+ENTRYPOINT ["python", "-m", "src"]

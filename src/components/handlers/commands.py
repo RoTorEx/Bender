@@ -2,9 +2,9 @@ from aiogram import Router
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove
 
-from bot.config import build_logger
-from bot.keyboards import buttons_menu
-from bot.states import MenuState
+from src.config import build_logger
+from src.components.keyboards import buttons_menu
+from src.components.states import MenuState
 
 
 logger = build_logger(__name__)

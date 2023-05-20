@@ -12,7 +12,7 @@ def build_logger(init_file_name: str) -> Logger:
         datefmt="%y-%m-%d %H:%M:%S",
         format="[%(asctime)s] [%(levelname)s] [%(name)s] - %(message)s",
         handlers=[
-            logging.FileHandler(filename="bot/bot.log", mode="a"),
+            logging.FileHandler(filename="src/bot.log", mode="a"),
             logging.StreamHandler(sys.stdout)
         ]
     )

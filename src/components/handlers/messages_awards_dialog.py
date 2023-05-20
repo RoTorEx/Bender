@@ -2,9 +2,10 @@ from aiogram import F, Router
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove
 
-from bot.keyboards import awards_menu, buttons_menu, msg_confirm_awards_kb
-from bot.services import AwardsService
-from bot.states import AwardsState, MenuState
+from src.components.enums import BotAnswer
+from src.components.keyboards import awards_menu, buttons_menu, msg_confirm_awards_kb
+from src.components.services import AwardsService
+from src.components.states import AwardsState, MenuState
 
 
 service = AwardsService()
@@ -24,7 +25,7 @@ async def msg_start_awards_dialog(message: Message, state: FSMContext) -> None:
 @awards_router.message(AwardsState.start_awards, F.text == "Read", content_types="text")
 async def msg_read_awards(message: Message) -> None:
     # await service.get_data_from_sheet()
-    await message.answer("Not implemented :'(")
+    await message.answer(BotAnswer.NOT_IMPLEMENTED)
 
 
 @awards_router.message(AwardsState.start_awards, F.text == "Write", content_types="text")
@@ -45,9 +46,14 @@ async def msg_confirm_awards(message: Message, state: FSMContext) -> None:
         "username": message.from_user.username,
     }
 
+    awards_count = len(message.text.split("\n"))
+
     await state.set_data(data)
     await state.set_state(AwardsState.confirm_awards)
-    await message.answer(f"Is all right here??\n\n```\n{message.text}\n```", reply_markup=msg_confirm_awards_kb())
+    await message.answer(
+        f"I see <b>{awards_count}</b> Day Awards! Is all right here?\n\n```\n{message.text}\n```",
+        reply_markup=msg_confirm_awards_kb(),
+    )
 
 
 @awards_router.message(AwardsState.confirm_awards)
@@ -58,12 +64,14 @@ async def msg_write_awards(message: Message, state: FSMContext) -> None:
         day_awards = data.get("text")
         await service.write_data_in_sheet(day_awards)
         await state.clear()
+        await state.set_state(MenuState.start_menu)
         await message.answer("Wrote it!", reply_markup=buttons_menu())
 
     elif message.text == "Adjust it.":
         await state.set_state(AwardsState.enter_awards)
         await message.answer("Please enter your edited day awards ^^", reply_markup=ReplyKeyboardRemove())
 
-    elif message.text == "No, I changed my mind. Cancel everything.":
+    elif message.text == "No, I changed my mind. Return menu.":
         await state.clear()
-        await message.answer("Returning to menu.", reply_markup=awards_menu())
+        await state.set_state(MenuState.start_menu)
+        await message.answer("Returning to menu.", reply_markup=buttons_menu())

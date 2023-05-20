@@ -4,8 +4,8 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-from bot.config import read_config
-from bot.config import build_logger
+from src.config import read_config
+from src.config import build_logger
 
 
 config = read_config()

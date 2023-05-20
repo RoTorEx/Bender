@@ -1,6 +1,6 @@
 from aiogram.dispatcher.fsm.storage.redis import DefaultKeyBuilder, RedisStorage
 
-from bot.config.config_reader import Redis
+from src.config.config_reader import Redis
 
 
 def redis_conection(redis: Redis) -> RedisStorage:
